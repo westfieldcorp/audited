@@ -193,7 +193,5 @@ describe Audited::Audit do
       }.to raise_exception('expected')
       expect(Thread.current[:audited_user]).to be_nil
     end
-
   end
-
 end
