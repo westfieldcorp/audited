@@ -55,9 +55,10 @@ module Audited
         Audit.audited_class_names << to_s
 
         on = Array(options[:on])
-        after_create :audit_create    if on.empty? || on.include?(:create)
-        before_update :audit_update   if on.empty? || on.include?(:update)
-        before_destroy :audit_destroy if on.empty? || on.include?(:destroy)
+
+        after_create :audit_create    if can_add_callback?(on, :create, options)
+        before_update :audit_update   if can_add_callback?(on, :update, options)
+        before_destroy :audit_destroy if can_add_callback?(on, :destroy, options)
 
         # Define and set after_audit and around_audit callbacks. This might be useful if you want
         # to notify a party after the audit has been created or if you want to access the newly-created
@@ -80,6 +81,14 @@ module Audited
 
       def default_ignored_attributes
         [primary_key, inheritance_column]
+      end
+
+      def can_add_callback?(on, action, options)
+        return (on.empty? || on.include?(action)) && options[:if] if options.has_key?(:if)
+
+        return (on.empty? || on.include?(action)) && !options[:unless] if options.has_key?(:unless)
+
+        on.empty? || on.include?(action)
       end
     end
 
