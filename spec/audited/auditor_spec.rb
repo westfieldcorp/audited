@@ -141,6 +141,32 @@ describe Audited::Auditor do
         Models::ActiveRecord::OnUpdateDestroy.create!( name: 'Bart' )
       }.to_not change( Audited::Audit, :count )
     end
+
+    context "with condition on audit" do
+      it "should not audit if the if condition returns false" do
+        expect {
+          Models::ActiveRecord::OnCreateWithIfFalseCondition.create( name: 'Companie')
+        }.to_not change( Audited::Audit, :count )
+      end
+
+      it "should audit if the if condition returns true" do
+        expect {
+          Models::ActiveRecord::OnCreateWithIfTrueCondition.create( name: 'Companie')
+        }.to change( Audited::Audit, :count ).by(1)
+      end
+
+      it "should not audit if the unless condition returns true" do
+        expect {
+          Models::ActiveRecord::OnCreateWithUnlessTrueCondition.create( name: 'Companie')
+        }.to_not change( Audited::Audit, :count )
+      end
+
+      it "should audit if the unless condition returns false" do
+        expect {
+          Models::ActiveRecord::OnCreateWithUnlessFalseCondition.create( name: 'Companie')
+        }.to change( Audited::Audit, :count ).by(1)
+      end
+    end
   end
 
   describe "on update" do
@@ -201,6 +227,36 @@ describe Audited::Auditor do
         }.to change( Audited::Audit, :count )
       end
     end
+
+    context "with condition on audit" do
+      it "should not audit if the if condition returns false" do
+        companie = Models::ActiveRecord::OnUpdateWithIfFalseCondition.create( name: 'Companie')
+        expect {
+          companie.update(name: 'Companie2')
+        }.to_not change( Audited::Audit, :count )
+      end
+
+      it "should audit if the if condition returns true" do
+        companie = Models::ActiveRecord::OnUpdateWithIfTrueCondition.create( name: 'Companie')
+        expect {
+          companie.update(name: 'Companie2')
+        }.to change( Audited::Audit, :count ).by(1)
+      end
+
+      it "should not audit if the unless condition returns true" do
+        companie = Models::ActiveRecord::OnUpdateWithUnlessTrueCondition.create( name: 'Companie')
+        expect {
+          companie.update(name: 'Companie2')
+        }.to_not change( Audited::Audit, :count )
+      end
+
+      it "should audit if the unless condition returns false" do
+        companie = Models::ActiveRecord::OnUpdateWithUnlessFalseCondition.create( name: 'Companie')
+        expect {
+          companie.update(name: 'Companie2')
+        }.to change( Audited::Audit, :count ).by(1)
+      end
+    end
   end
 
   describe "on destroy" do
@@ -255,6 +311,36 @@ describe Audited::Auditor do
       }.to change( Audited::Audit, :count )
 
       expect(company.audits.map { |a| a.action }).to eq(['create', 'destroy'])
+    end
+
+    context "with condition on audit" do
+      it "should not audit if the if condition returns false" do
+        companie = Models::ActiveRecord::OnDestroyWithIfFalseCondition.create( name: 'Companie')
+        expect {
+          companie.destroy
+        }.to_not change( Audited::Audit, :count )
+      end
+
+      it "should audit if the if condition returns true" do
+        companie = Models::ActiveRecord::OnDestroyWithIfTrueCondition.create( name: 'Companie')
+        expect {
+          companie.destroy
+        }.to change( Audited::Audit, :count ).by(1)
+      end
+
+      it "should not audit if the unless condition returns true" do
+        companie = Models::ActiveRecord::OnDestroyWithUnlessTrueCondition.create( name: 'Companie')
+        expect {
+          companie.destroy
+        }.to_not change( Audited::Audit, :count )
+      end
+
+      it "should audit if the unless condition returns false" do
+        companie = Models::ActiveRecord::OnDestroyWithUnlessFalseCondition.create( name: 'Companie')
+        expect {
+          companie.destroy
+        }.to change( Audited::Audit, :count ).by(1)
+      end
     end
   end
 

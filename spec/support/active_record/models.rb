@@ -95,5 +95,65 @@ module Models
       self.table_name = 'companies'
       audited on: [:create, :update]
     end
+
+    class OnCreateWithIfFalseCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :create, if: lambda { false }.call
+    end
+
+    class OnUpdateWithIfFalseCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :update, if: lambda { false }.call
+    end
+
+    class OnDestroyWithIfFalseCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :destroy, if: lambda { false }.call
+    end
+
+    class OnCreateWithIfTrueCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :create, if: lambda { true }.call
+    end
+
+    class OnUpdateWithIfTrueCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :update, if: lambda { true }.call
+    end
+
+    class OnDestroyWithIfTrueCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :destroy, if: lambda { true }.call
+    end
+
+    class OnCreateWithUnlessFalseCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :create, unless: lambda { false }.call
+    end
+
+    class OnUpdateWithUnlessFalseCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :update, unless: lambda { false }.call
+    end
+
+    class OnDestroyWithUnlessFalseCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :destroy, unless: lambda { false }.call
+    end
+
+    class OnCreateWithUnlessTrueCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :create, unless: lambda { true }.call
+    end
+
+    class OnUpdateWithUnlessTrueCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :update, unless: lambda { true }.call
+    end
+
+    class OnDestroyWithUnlessTrueCondition < ::ActiveRecord::Base
+      self.table_name = 'companies'
+      audited on: :destroy, unless: lambda { true }.call
+    end
   end
 end
